@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中國歷史專題：晚清改革</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .font-serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Custom scrollbar for chat */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+    </style>
+</head>
+<body class="bg-stone-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+        const { 
+            BookOpen, Users, Sword, Scroll, AlertTriangle, CheckCircle, 
+            ArrowRight, History, Scale, Anchor, Landmark, Sparkles, 
+            MessageCircle, Send, Bot, User, X, Lightbulb, Factory, Ship 
+        } = lucideReact;
+
+        const QingReformLesson = () => {
+          const [activeTab, setActiveTab] = useState('intro');
+
+          const tabs = [
+            { id: 'intro', label: '課堂導言', icon: <History size={20} /> },
+            { id: 'yangwu', label: '洋務運動', icon: <Anchor size={20} /> },
+            { id: 'wuxu', label: '戊戌維新', icon: <Scroll size={20} /> },
+            { id: 'compare', label: '比較與總結', icon: <Scale size={20} /> },
+            { id: 'ai-lab', label: 'AI 歷史實驗室', icon: <Sparkles size={20} /> },
+          ];
+
+          const renderContent = () => {
+            switch (activeTab) {
+              case 'intro':
+                return <IntroSection setActiveTab={setActiveTab} />;
+              case 'yangwu':
+                return <YangwuSection />;
+              case 'wuxu':
+                return <WuxuSection />;
+              case 'compare':
+                return <CompareSection />;
+              case 'ai-lab':
+                return <AiLabSection />;
+              default:
+                return <IntroSection setActiveTab={setActiveTab} />;
+            }
+          };
+
+          return (
+            <div className="min-h-screen bg-stone-100 font-sans text-stone-800">
+              {/* Header */}
+              <header className="bg-red-900 text-amber-50 p-6 shadow-lg">
+                <div className="max-w-5xl mx-auto flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <BookOpen size={32} />
+                    <div>
+                      <h1 className="text-2xl font-bold tracking-wide">中國歷史專題：晚清改革</h1>
+                      <p className="text-sm text-red-200 opacity-90">授課老師：AI 歷史導師</p>
+                    </div>
+                  </div>
+                  <div className="hidden md:block text-sm bg-red-800 px-4 py-2 rounded-full border border-red-700">
+                    主題：洋務運動 與 戊戌維新
+                  </div>
+                </div>
+              </header>
+
+              {/* Main Content Area */}
+              <main className="max-w-5xl mx-auto p-4 md:p-6">
+                {/* Navigation Tabs */}
+                <div className="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-xl shadow-sm">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-medium flex-1 justify-center whitespace-nowrap
+                        ${activeTab === tab.id 
+                          ? 'bg-red-800 text-white shadow-md' 
+                          : tab.id === 'ai-lab' 
+                            ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
+                            : 'bg-stone-50 text-stone-600 hover:bg-stone-200'}`}
+                    >
+                      {tab.icon}
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Dynamic Content Content */}
+                <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 min-h-[500px] transition-all relative">
+                  {renderContent()}
+                </div>
+              </main>
+
+              <footer className="text-center py-6 text-stone-500 text-sm">
+                <p>© 2024 中國歷史互動課堂 | 晚清救國運動專題 | Powered by Gemini</p>
+              </footer>
+            </div>
+          );
+        };
+
+        // --- Sections ---
+
+        const IntroSection = ({ setActiveTab }) => (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="border-l-4 border-red-800 pl-6 py-2 bg-red-50 rounded-r-lg">
+              <h2 className="text-2xl font-bold text-red-900">各位同學好！</h2>
+              <p className="text-lg mt-2 text-stone-700 leading-relaxed">
+                今天我們要深入探討晚清兩次重要的救國運動：<span className="font-bold text-red-800">洋務運動</span>與<span className="font-bold text-red-800">戊戌維新</span>。
+                這兩場運動代表了中國在面對列強入侵時，從「學習技術」到「改變制度」的深刻反思。
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mt-8">
+              <div 
+                onClick={() => setActiveTab('yangwu')}
+                className="group cursor-pointer p-6 border-2 border-stone-200 rounded-xl hover:border-red-800 hover:bg-red-50 transition-all"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-stone-800 group-hover:text-red-900">1. 洋務運動</h3>
+                  <Anchor className="text-stone-400 group-hover:text-red-800" />
+                </div>
+                <p className="text-stone-600 mb-4">19世紀60-90年代</p>
+                <p className="text-sm text-stone-500">
+                  核心思想：「中學為體，西學為用」。<br/>
+                  側重於軍事、工業技術的引進。
+                </p>
+                <div className="mt-4 flex items-center text-red-800 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                  點擊學習 <ArrowRight size={16} className="ml-1" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => setActiveTab('wuxu')}
+                className="group cursor-pointer p-6 border-2 border-stone-200 rounded-xl hover:border-blue-800 hover:bg-blue-50 transition-all"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-stone-800 group-hover:text-blue-900">2. 戊戌維新</h3>
+                  <Scroll className="text-stone-400 group-hover:text-blue-800" />
+                </div>
+                <p className="text-stone-600 mb-4">1898年 (百日維新)</p>
+                <p className="text-sm text-stone-500">
+                  核心思想：變法圖強，君主立憲。<br/>
+                  側重於政治制度、教育與經濟的全面改革。
+                </p>
+                <div className="mt-4 flex items-center text-blue-800 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                  點擊學習 <ArrowRight size={16} className="ml-1" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => setActiveTab('ai-lab')}
+                className="group cursor-pointer p-6 border-2 border-indigo-200 rounded-xl hover:border-indigo-800 hover:bg-indigo-50 transition-all"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-stone-800 group-hover:text-indigo-900">✨ AI 歷史實驗室</h3>
+                  <Sparkles className="text-stone-400 group-hover:text-indigo-800" />
+                </div>
+                <p className="text-stone-600 mb-4">穿越時空 & 歷史推演</p>
+                <p className="text-sm text-stone-500">
+                  與李鴻章、康有為直接對話。<br/>
+                  利用 AI 推演歷史的可能性。
+                </p>
+                <div className="mt-4 flex items-center text-indigo-800 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                  進入實驗室 <ArrowRight size={16} className="ml-1" />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+        const YangwuSection = () => {
+          const [activeMeasure, setActiveMeasure] = useState(null);
+
+          const measures = [
+            {
+              id: 'military',
+              title: '軍事工業',
+              slogan: '口號：自強',
+              shortDesc: '引進西方機器，創辦近代軍事工業。',
+              icon: <Sword className="text-red-800" size={24} />,
+              bgColor: 'bg-red-50',
+              borderColor: 'border-red-200',
+              textColor: 'text-red-900',
+              details: {
+                intro: '面對內憂外患，洋務派認為「中國文武制度，事事遠出西人之上，獨火器萬不能及」。因此，他們主張「師夷長技以制夷」，優先發展軍事工業以鎮壓農民起義和抵禦外侮。',
+                examples: [
+                  { name: '安慶內軍械所', person: '曾國藩', desc: '最早的近代軍事工業，主要生產子彈、火藥。' },
+                  { name: '江南製造總局', person: '李鴻章', desc: '規模最大的軍事工廠，如同當時的「國防工業園區」，附設翻譯館，翻譯了大量西方科技書籍。' },
+                  { name: '福州船政局', person: '左宗棠', desc: '遠東最大的造船廠，同時附設船政學堂，培養了嚴復、詹天佑等人才。' }
+                ],
+                significance: '引進了西方先進的機器和生產工藝，是中國從手工生產轉向機器生產的開端。雖然管理上仍有封建衙門習氣，但在此基礎上誕生了中國近代工業。'
+              }
+            },
+            {
+              id: 'civil',
+              title: '民用企業',
+              slogan: '口號：求富',
+              shortDesc: '解決軍用資金燃料困難，與外商競爭。',
+              icon: <Factory className="text-amber-700" size={24} />,
+              bgColor: 'bg-amber-50',
+              borderColor: 'border-amber-200',
+              textColor: 'text-amber-900',
+              details: {
+                intro: '軍事工業發展過程中面臨資金短缺、燃料（煤）不足和運輸困難等問題。為了「分洋商之利」（抵制外國經濟侵略）並解決軍用企業的困難，洋務派從19世紀70年代起轉向「求富」，創辦民用企業。',
+                examples: [
+                  { name: '輪船招商局', person: '李鴻章', desc: '中國第一家近代輪船航運公司，打破了列強對中國水上運輸的壟斷，收回了部分利權。' },
+                  { name: '開平礦務局', person: '李鴻章', desc: '主要採煤，供應軍艦和輪船燃料，解決了能源短缺問題。' },
+                  { name: '漢陽鐵廠', person: '張之洞', desc: '中國第一個近代鋼鐵工業，奠定了中國重工業的基礎。' }
+                ],
+                significance: '客觀上刺激了中國民族資本主義的產生。這些企業多採「官督商辦」，雖然有利潤，但也受到官僚勢力的壓制。它對外國資本主義的經濟侵略起到了一定的抵制作用。'
+              }
+            },
+            {
+              id: 'education',
+              title: '海軍與教育',
+              slogan: '口號：育才',
+              shortDesc: '籌建新式海軍，改革教育體制。',
+              icon: <Ship className="text-blue-800" size={24} />,
+              bgColor: 'bg-blue-50',
+              borderColor: 'border-blue-200',
+              textColor: 'text-blue-900',
+              details: {
+                intro: '為了適應洋務運動的需要，必須改變過去「重文輕武」、「重經義輕格致」的傳統，著手建設海防和培養通曉洋務的人才。',
+                examples: [
+                  { name: '籌建海軍', person: '李鴻章等', desc: '建立了北洋、南洋、福建三支海軍。其中北洋水師實力最強，號稱亞洲第一，但最終在甲午戰爭中全軍覆沒。' },
+                  { name: '京師同文館', person: '奕訢', desc: '第一所新式學堂，主要培養外語翻譯和外交人才，教授天文、算學等西學。' },
+                  { name: '派遣留學生', person: '容閎(倡議)', desc: '選派幼童赴美留學（如詹天佑），他們歸國後成為了鐵路、礦冶、電報等領域的專家。' }
+                ],
+                significance: '衝擊了傳統的科舉教育制度，培養了一批具有近代科學知識和國際視野的新式人才，有利於西學在中國的傳播。'
+              }
+            }
+          ];
+
+          return (
+            <div className="space-y-8 animate-fadeIn relative">
+              <SectionHeader 
+                title="洋務運動 (1861-1895)" 
+                subtitle="師夷長技以制夷 —— 器物層面的改革"
+                color="red"
+              />
+
+              <div className="grid md:grid-cols-3 gap-6">
+                <DetailCard title="時代背景" icon={<History />}>
+                  <ul className="list-disc list-inside text-sm space-y-2 text-stone-700">
+                    <li><strong className="text-red-800">內憂：</strong>太平天國運動動搖清廷統治。</li>
+                    <li><strong className="text-red-800">外患：</strong>兩次鴉片戰爭戰敗，深感西方船堅砲利。</li>
+                    <li><strong className="text-red-800">目的：</strong>利用西方先進技術來鎮壓農民起義，抵禦外侮，維護清朝統治。</li>
+                  </ul>
+                </DetailCard>
+
+                <DetailCard title="代表人物" icon={<Users />}>
+                  <div className="text-sm space-y-3 text-stone-700">
+                    <div className="bg-stone-50 p-2 rounded">
+                      <span className="block font-bold text-stone-900">中央：</span>
+                      恭親王奕訢
+                    </div>
+                    <div className="bg-stone-50 p-2 rounded">
+                      <span className="block font-bold text-stone-900">地方：</span>
+                      曾國藩、李鴻章、左宗棠、張之洞
+                    </div>
+                  </div>
+                </DetailCard>
+
+                <DetailCard title="指導思想" icon={<BookOpen />}>
+                  <div className="text-center pt-4">
+                    <p className="text-xl font-serif font-bold text-red-900">「中學為體，西學為用」</p>
+                    <p className="text-xs mt-2 text-stone-500">意即以中國的封建倫理綱常為根本，輔以西方的科學技術。</p>
+                  </div>
+                </DetailCard>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 border border-stone-200 shadow-md">
+                <h3 className="text-lg font-bold text-stone-800 mb-4 flex items-center gap-2">
+                  <Sword className="text-red-800" size={20} />
+                  主要內容與措施 (點擊下方卡片查看詳情)
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {measures.map((m) => (
+                    <div 
+                      key={m.id}
+                      onClick={() => setActiveMeasure(m)}
+                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg ${m.bgColor} ${m.borderColor} hover:border-opacity-100 border-opacity-60`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        {m.icon}
+                        <h4 className={`font-bold ${m.textColor}`}>{m.title}</h4>
+                      </div>
+                      <div className="text-xs font-bold bg-white/60 inline-block px-2 py-1 rounded mb-2 text-stone-600">
+                        {m.slogan}
+                      </div>
+                      <p className="text-xs text-stone-600 mb-3 leading-relaxed">{m.shortDesc}</p>
+                      <div className={`text-xs font-bold ${m.textColor} flex items-center`}>
+                        點擊詳解及意義 <ArrowRight size={12} className="ml-1" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Modal for Measure Details */}
+              {activeMeasure && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={() => setActiveMeasure(null)}>
+                  <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+                    <button 
+                      onClick={() => setActiveMeasure(null)}
+                      className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 transition-colors"
+                    >
+                      <X size={24} />
+                    </button>
+                    
+                    <div className="flex items-center gap-3 mb-4 border-b pb-4">
+                      <div className={`p-3 rounded-full ${activeMeasure.bgColor}`}>
+                        {activeMeasure.icon}
+                      </div>
+                      <div>
+                        <h3 className={`text-2xl font-bold ${activeMeasure.textColor}`}>{activeMeasure.title}</h3>
+                        <span className="text-stone-500 text-sm font-medium">{activeMeasure.slogan}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="bg-stone-50 p-4 rounded-lg border-l-4 border-stone-300">
+                        <h4 className="font-bold text-stone-800 mb-2 flex items-center gap-2">
+                          <BookOpen size={16} /> 背景與目的
+                        </h4>
+                        <p className="text-stone-700 text-sm leading-relaxed">
+                          {activeMeasure.details.intro}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-stone-800 mb-3 flex items-center gap-2">
+                          <Factory size={16} /> 具體措施舉例
+                        </h4>
+                        <div className="space-y-3">
+                          {activeMeasure.details.examples.map((ex, idx) => (
+                            <div key={idx} className="border border-stone-200 rounded-lg p-3 hover:bg-stone-50 transition-colors">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className="font-bold text-stone-900">{ex.name}</span>
+                                <span className="text-xs bg-stone-200 text-stone-600 px-2 py-0.5 rounded">{ex.person}</span>
+                              </div>
+                              <p className="text-sm text-stone-600">{ex.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className={`p-4 rounded-lg ${activeMeasure.bgColor} border border-${activeMeasure.textColor.split('-')[1]}-200`}>
+                        <h4 className={`font-bold ${activeMeasure.textColor} mb-2 flex items-center gap-2`}>
+                          <Lightbulb size={16} /> 歷史意義
+                        </h4>
+                        <p className="text-stone-800 text-sm leading-relaxed font-medium">
+                          {activeMeasure.details.significance}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <ResultCard type="success" title="歷史意義與成效">
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    <li>引進了西方先進科技，開啟了中國<strong>近代化</strong>的歷程。</li>
+                    <li>培養了一批科技、翻譯和外交人才。</li>
+                    <li>民用企業在一定程度上抵制了外國資本主義的經濟侵略。</li>
+                  </ul>
+                </ResultCard>
+
+                <ResultCard type="failure" title="失敗原因與結局">
+                  <div className="mb-2 font-bold text-stone-800">結局：甲午戰爭慘敗，標誌運動失敗。</div>
+                  <ul className="list-disc list-inside text-sm space-y-2">
+                    <li>
+                      <strong className="text-red-800">只改器物不改制度 (根本原因)：</strong>
+                      <span className="block pl-4 text-xs text-stone-600 mt-1">
+                        僅引進西方技術，卻保留腐朽的封建專制制度，如同「舊瓶裝新酒」，無法從根本上富強。
+                      </span>
+                    </li>
+                    <li>
+                      <strong className="text-red-800">保守派（頑固派）的強烈反對：</strong>
+                      <span className="block pl-4 text-xs text-stone-600 mt-1">
+                        以大學士<strong>倭仁</strong>為首的頑固派，痛斥洋務是「以夷變夏」。他們認為立國根本在於禮義人心，而非技藝，視學習西方為恥辱，處處掣肘。
+                      </span>
+                    </li>
+                    <li>
+                      <strong className="text-red-800">民智未開，迷信阻撓：</strong>
+                      <span className="block pl-4 text-xs text-stone-600 mt-1">
+                        社會風氣守舊，民間迷信風水。例如反對<strong>修築鐵路</strong>，認為會驚動祖墳龍脈、破壞風水，導致建設困難重重（如唐胥鐵路初期曾禁止使用火車頭）。
+                      </span>
+                    </li>
+                    <li>
+                      <strong className="text-red-800">官僚腐敗：</strong>
+                      <span className="block pl-4 text-xs text-stone-600 mt-1">
+                        洋務企業多採「官督商辦」，充斥衙門習氣，貪污舞弊嚴重，經營效率低下。
+                      </span>
+                    </li>
+                  </ul>
+                </ResultCard>
+              </div>
+            </div>
+          );
+        };
+
+        const WuxuSection = () => (
+          <div className="space-y-8 animate-fadeIn">
+            <SectionHeader 
+              title="戊戌維新 (1898)" 
+              subtitle="變法圖強 —— 制度層面的改革"
+              color="blue"
+            />
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <DetailCard title="時代背景" icon={<History />}>
+                <ul className="list-disc list-inside text-sm space-y-2 text-stone-700">
+                  <li><strong className="text-blue-800">甲午戰敗：</strong>洋務運動破產，民族危機空前嚴重。</li>
+                  <li><strong className="text-blue-800">瓜分狂潮：</strong>列強劃分勢力範圍，中國面臨亡國滅種。</li>
+                  <li><strong className="text-blue-800">公車上書：</strong>康有為等舉人聯名上書，揭開維新序幕。</li>
+                </ul>
+              </DetailCard>
+
+              <DetailCard title="代表人物" icon={<Users />}>
+                 <div className="text-sm space-y-3 text-stone-700">
+                  <div className="bg-stone-50 p-2 rounded">
+                    <span className="block font-bold text-stone-900">維新派：</span>
+                    康有為、梁啟超、譚嗣同 (戊戌六君子之一)
+                  </div>
+                  <div className="bg-stone-50 p-2 rounded">
+                    <span className="block font-bold text-stone-900">支持者：</span>
+                    光緒皇帝 (試圖藉變法奪回實權)
+                  </div>
+                </div>
+              </DetailCard>
+
+              <DetailCard title="核心主張" icon={<Landmark />}>
+                <div className="text-center pt-4">
+                  <p className="text-xl font-serif font-bold text-blue-900">「君主立憲」</p>
+                  <p className="text-xs mt-2 text-stone-500">學習日本明治維新，改革政治制度，不僅僅是學習技術。</p>
+                </div>
+              </DetailCard>
+            </div>
+
+            <div className="bg-stone-50 rounded-xl p-6 border border-stone-200">
+              <h3 className="text-lg font-bold text-stone-800 mb-4 flex items-center gap-2">
+                <Scroll className="text-blue-800" size={20} />
+                主要內容 (百日維新)
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                 <div className="p-4 bg-white rounded shadow-sm border-l-4 border-blue-300">
+                  <h4 className="font-bold text-blue-900 mb-2">政治方面</h4>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    裁撤冗官，精簡機構；<br/>
+                    允許官民上書言事（廣開言路）；<br/>
+                    舉薦人才。
+                  </p>
+                </div>
+                <div className="p-4 bg-white rounded shadow-sm border-l-4 border-blue-400">
+                  <h4 className="font-bold text-blue-900 mb-2">經濟方面</h4>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    鼓勵私人興辦工礦企業；<br/>
+                    設立農工商總局；<br/>
+                    編制國家預算。
+                  </p>
+                </div>
+                <div className="p-4 bg-white rounded shadow-sm border-l-4 border-blue-500">
+                  <h4 className="font-bold text-blue-900 mb-2">文化教育</h4>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    廢除八股文，改試策論；<br/>
+                    設立<span className="font-bold">京師大學堂</span> (北大前身)；<br/>
+                    各地設立中小學堂。
+                  </p>
+                </div>
+                <div className="p-4 bg-white rounded shadow-sm border-l-4 border-blue-600">
+                  <h4 className="font-bold text-blue-900 mb-2">軍事方面</h4>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    裁減綠營；<br/>
+                    精練新軍 (按西法練兵)。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <ResultCard type="success" title="意義：思想啟蒙">
+                <ul className="list-disc list-inside text-sm space-y-1">
+                  <li>是一次資產階級性質的<strong>政治改良運動</strong>。</li>
+                  <li>在社會上起了<strong>思想啟蒙</strong>作用，促進了中國人民的覺醒。</li>
+                  <li>京師大學堂得以保留，推動近代教育發展。</li>
+                </ul>
+              </ResultCard>
+
+              <ResultCard type="failure" title="失敗：戊戌政變">
+                <div className="mb-2 font-bold text-stone-800">結局：慈禧太后發動政變，光緒被囚，六君子被殺，歷時103天。</div>
+                <ul className="list-disc list-inside text-sm space-y-2">
+                  <li>
+                    <strong className="text-red-800">推行過急，貪多嚼不爛：</strong>
+                    <span className="block pl-4 text-xs text-stone-600 mt-1">
+                      光緒帝救國心切，在短短百日內頒布了數十道詔令。改革措施過多且過於頻繁，令地方官員無所適從，甚至敷衍了事，導致政令難以執行。
+                    </span>
+                  </li>
+                  <li>
+                    <strong className="text-red-800">政策樹敵太多，損害既得利益：</strong>
+                    <span className="block pl-4 text-xs text-stone-600 mt-1">
+                      • <strong>廢除八股文：</strong>直接切斷了傳統讀書人（士子）考取功名的唯一出路，引起全國士大夫的強烈反對。<br/>
+                      • <strong>裁撤冗官：</strong>裁減閒散衙門，導致大量守舊官員面臨失業，引發官僚集團的恐慌與拼死抵制。
+                    </span>
+                  </li>
+                  <li>
+                    <strong className="text-red-800">力量懸殊，缺乏實權：</strong>
+                    <span className="block pl-4 text-xs text-stone-600 mt-1">
+                      維新派僅依靠無權的光緒帝，缺乏軍隊支持（袁世凱告密），最終無力抵抗慈禧太后為首的守舊勢力反撲。
+                    </span>
+                  </li>
+                </ul>
+              </ResultCard>
+            </div>
+          </div>
+        );
+
+        const AiLabSection = () => {
+          const [mode, setMode] = useState('chat'); // 'chat' or 'scenario'
+          const [selectedPersona, setSelectedPersona] = useState('li-hongzhang');
+          const [messages, setMessages] = useState([
+            { role: 'ai', text: '你好！我是李鴻章。老夫一生辦洋務，這其中的艱辛，後人恐難理解。你有何疑問，儘管問來。' }
+          ]);
+          const [inputText, setInputText] = useState('');
+          const [isLoading, setIsLoading] = useState(false);
+          const messagesEndRef = useRef(null);
+
+          const scrollToBottom = () => {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          };
+
+          useEffect(() => {
+            scrollToBottom();
+          }, [messages]);
+
+          const personas = {
+            'li-hongzhang': {
+              name: '李鴻章',
+              role: '洋務派代表',
+              prompt: '你是晚清重臣李鴻章。你說話要帶有文言色彩，語氣穩重、老練，有時會流露出無奈。你堅持「中學為體，西學為用」，認為中國必須學習西方技術才能自保。你要為洋務運動辯護，強調當時的局限（如朝廷腐敗、頑固派反對）。不要說你是AI。',
+              initial: '你好！我是李鴻章。老夫一生辦洋務，這其中的艱辛，後人恐難理解。你有何疑問，儘管問來。',
+              avatar: <Anchor className="text-red-800" />
+            },
+            'kang-youwei': {
+              name: '康有為',
+              role: '維新派代表',
+              prompt: '你是維新變法領袖康有為。你說話熱情激昂，充滿改革的理想主義。你痛斥守舊派誤國，主張全盤學習日本明治維新，推行君主立憲。你認為僅僅學習技術（洋務）是無用的，必須改革制度。不要說你是AI。',
+              initial: '在下康有為！如今列強環伺，瓜分在即，我大清若不變法圖強，國將不國！同學有何高見？',
+              avatar: <Scroll className="text-blue-800" />
+            },
+            'scenario': {
+              name: '歷史推演',
+              role: 'AI 歷史學家',
+              prompt: '你是一位精通中國近代史的歷史學家。你的任務是根據用戶提出的假設性歷史問題（What-if scenarios），基於歷史邏輯進行推演。分析需客觀、理性，並指出改變歷史的關鍵變數。',
+              initial: '歡迎來到歷史推演室。如果你想問「如果光緒有實權...」或「如果甲午戰爭中國贏了...」，請隨時提出，我們一起探討歷史的可能性。',
+              avatar: <Sparkles className="text-purple-800" />
+            }
+          };
+
+          const handlePersonaChange = (key) => {
+            setSelectedPersona(key);
+            setMessages([{ role: 'ai', text: personas[key].initial }]);
+            setMode(key === 'scenario' ? 'scenario' : 'chat');
+          };
+
+          const callGemini = async (userMessage) => {
+            setIsLoading(true);
+            const apiKey = ""; // 
+            const currentPersona = personas[selectedPersona];
+            
+            // Construct conversation history for context
+            const historyText = messages.slice(-6).map(m => `${m.role === 'user' ? '學生' : currentPersona.name}: ${m.text}`).join('\n');
+            
+            const systemPrompt = `
+              ${currentPersona.prompt}
+              
+              以下是最近的對話記錄：
+              ${historyText}
+              
+              學生: ${userMessage}
+              ${currentPersona.name}:
+            `;
+
+            try {
+              const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    contents: [{ parts: [{ text: systemPrompt }] }]
+                  }),
+                }
+              );
+
+              const data = await response.json();
+              if (data.error) {
+                throw new Error(data.error.message);
+              }
+              const aiText = data.candidates[0].content.parts[0].text;
+              
+              setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
+            } catch (error) {
+              console.error('Error calling Gemini:', error);
+              setMessages(prev => [...prev, { role: 'ai', text: "抱歉，老夫（或系統）暫時有些疲憊，請稍後再試。（API Error）" }]);
+            } finally {
+              setIsLoading(false);
+            }
+          };
+
+          const handleSend = () => {
+            if (!inputText.trim()) return;
+            
+            const newMsg = { role: 'user', text: inputText };
+            setMessages(prev => [...prev, newMsg]);
+            setInputText('');
+            callGemini(inputText);
+          };
+
+          return (
+            <div className="space-y-6 animate-fadeIn h-[600px] flex flex-col">
+              <SectionHeader 
+                title="✨ AI 歷史實驗室" 
+                subtitle="與歷史人物對話，推演歷史變局"
+                color="indigo"
+              />
+
+              <div className="flex flex-col md:flex-row gap-4 h-full">
+                {/* Sidebar / Controls */}
+                <div className="md:w-1/4 space-y-3">
+                  <p className="text-sm font-bold text-stone-500 uppercase tracking-wider">選擇模式</p>
+                  
+                  <button 
+                    onClick={() => handlePersonaChange('li-hongzhang')}
+                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-all text-left border ${selectedPersona === 'li-hongzhang' ? 'bg-red-100 border-red-300 text-red-900' : 'bg-white border-stone-200 hover:bg-stone-50'}`}
+                  >
+                    <div className="p-2 bg-red-100 rounded-full"><Anchor size={16} className="text-red-800"/></div>
+                    <div>
+                      <div className="font-bold">對話：李鴻章</div>
+                      <div className="text-xs opacity-75">洋務運動視角</div>
+                    </div>
+                  </button>
+
+                  <button 
+                    onClick={() => handlePersonaChange('kang-youwei')}
+                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-all text-left border ${selectedPersona === 'kang-youwei' ? 'bg-blue-100 border-blue-300 text-blue-900' : 'bg-white border-stone-200 hover:bg-stone-50'}`}
+                  >
+                    <div className="p-2 bg-blue-100 rounded-full"><Scroll size={16} className="text-blue-800"/></div>
+                    <div>
+                      <div className="font-bold">對話：康有為</div>
+                      <div className="text-xs opacity-75">維新變法視角</div>
+                    </div>
+                  </button>
+
+                  <button 
+                    onClick={() => handlePersonaChange('scenario')}
+                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-all text-left border ${selectedPersona === 'scenario' ? 'bg-purple-100 border-purple-300 text-purple-900' : 'bg-white border-stone-200 hover:bg-stone-50'}`}
+                  >
+                    <div className="p-2 bg-purple-100 rounded-full"><Sparkles size={16} className="text-purple-800"/></div>
+                    <div>
+                      <div className="font-bold">歷史推演</div>
+                      <div className="text-xs opacity-75">假設性問題分析</div>
+                    </div>
+                  </button>
+
+                  <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 mt-4">
+                    <p className="text-xs text-indigo-800 font-bold mb-2">💡 試著問問：</p>
+                    <ul className="text-xs text-indigo-700 space-y-2 list-disc list-inside cursor-pointer">
+                      {selectedPersona === 'li-hongzhang' && (
+                        <>
+                          <li onClick={() => setInputText("為什麼你要簽訂馬關條約？")}>為什麼你要簽訂馬關條約？</li>
+                          <li onClick={() => setInputText("洋務運動為什麼失敗了？")}>洋務運動為什麼失敗了？</li>
+                        </>
+                      )}
+                      {selectedPersona === 'kang-youwei' && (
+                        <>
+                          <li onClick={() => setInputText("廢除八股文不會得罪太多人嗎？")}>廢除八股文不會得罪太多人嗎？</li>
+                          <li onClick={() => setInputText("日本明治維新為什麼成功了？")}>日本明治維新為什麼成功了？</li>
+                        </>
+                      )}
+                      {selectedPersona === 'scenario' && (
+                        <>
+                          <li onClick={() => setInputText("如果光緒皇帝殺了慈禧，變法會成功嗎？")}>如果光緒殺了慈禧，變法會成功嗎？</li>
+                          <li onClick={() => setInputText("如果洋務運動成功了，還會有維新嗎？")}>如果洋務成功，還會有維新嗎？</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Chat Area */}
+                <div className="md:w-3/4 flex flex-col bg-stone-50 rounded-xl border border-stone-200 overflow-hidden relative">
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {messages.map((msg, idx) => (
+                      <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`flex max-w-[80%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-stone-700 text-white' : 'bg-white border border-stone-200'}`}>
+                            {msg.role === 'user' ? <User size={16} /> : personas[selectedPersona].avatar}
+                          </div>
+                          <div className={`p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                            msg.role === 'user' 
+                              ? 'bg-stone-800 text-white rounded-tr-none' 
+                              : 'bg-white border border-stone-200 text-stone-800 rounded-tl-none'
+                          }`}>
+                            {msg.text}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex justify-start w-full animate-pulse">
+                        <div className="flex max-w-[80%] gap-3">
+                          <div className="w-8 h-8 rounded-full bg-white border border-stone-200 flex items-center justify-center">
+                           <Bot size={16} className="text-stone-400"/>
+                          </div>
+                          <div className="p-3 bg-white rounded-2xl rounded-tl-none border border-stone-200 text-stone-400 text-sm">
+                            正在思考歷史脈絡... ✨
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+
+                  {/* Input */}
+                  <div className="p-4 bg-white border-t border-stone-200 flex gap-2">
+                    <input 
+                      type="text" 
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                      placeholder={mode === 'scenario' ? "輸入你的歷史假設..." : `向${personas[selectedPersona].name}提問...`}
+                      className="flex-1 border border-stone-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                      disabled={isLoading}
+                    />
+                    <button 
+                      onClick={handleSend}
+                      disabled={isLoading || !inputText.trim()}
+                      className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Send size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const CompareSection = () => (
+          <div className="space-y-8 animate-fadeIn">
+            <SectionHeader 
+              title="比較與深度總結" 
+              subtitle="從「器物」到「制度」的跨越"
+              color="emerald"
+            />
+            
+            <div className="bg-white border border-stone-200 rounded-xl shadow-lg overflow-hidden">
+              <div className="grid grid-cols-3 bg-stone-100 p-4 font-bold text-stone-700 border-b border-stone-300">
+                <div className="col-span-1">比較項目</div>
+                <div className="col-span-1 text-red-800">洋務運動</div>
+                <div className="col-span-1 text-blue-800">戊戌維新</div>
+              </div>
+              
+              <CompareRow 
+                label="學習對象" 
+                left="西方技術 (器物)" 
+                right="西方政治制度 (制度)" 
+              />
+              <CompareRow 
+                label="指導思想" 
+                left="中學為體，西學為用 (維護舊體制)" 
+                right="變法圖強，君主立憲 (改革舊體制)" 
+              />
+              <CompareRow 
+                label="改革範圍" 
+                left="局限於軍事、經濟、技術教育" 
+                right="全面涉及政治、經濟、文化、軍事" 
+                highlight={true}
+              />
+              <CompareRow 
+                label="參與群體" 
+                left="地主階級洋務派 (官僚)" 
+                right="資產階級維新派 (知識分子)" 
+              />
+              <CompareRow 
+                label="性質" 
+                left="地主階級自救運動" 
+                right="資產階級改良運動" 
+              />
+            </div>
+
+            <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200 mt-6">
+              <h3 className="text-xl font-bold text-emerald-900 mb-3 flex items-center gap-2">
+                <CheckCircle size={24} />
+                老師的總結：為何維新更全面？
+              </h3>
+              <p className="text-stone-700 leading-relaxed mb-4">
+                各位同學，透過比較我們可以發現，洋務運動的失敗證明了<strong>單純引進技術（船堅砲利）無法挽救腐敗的封建帝國</strong>。就像一間破舊的房子，只換了新的大門（武器），但樑柱（制度）已經腐朽，房子依然會倒塌。
+              </p>
+              <p className="text-stone-700 leading-relaxed">
+                戊戌維新的進步之處，在於維新派認識到了這一點。他們試圖從<strong>制度</strong>入手，改革官制、法律和教育。雖然因為觸動了守舊勢力的根本利益而迅速失敗，但它標誌著中國近代化探索進入了一個更深層次的階段，為後來的辛亥革命埋下了伏筆。
+              </p>
+            </div>
+          </div>
+        );
+
+        // --- Helper Components ---
+
+        const SectionHeader = ({ title, subtitle, color }) => (
+          <div className="mb-6">
+            <h2 className={`text-3xl font-bold text-${color}-900 mb-1`}>{title}</h2>
+            <div className={`h-1 w-20 bg-${color}-700 mb-2 rounded`}></div>
+            <p className="text-stone-500 italic">{subtitle}</p>
+          </div>
+        );
+
+        const DetailCard = ({ title, icon, children }) => (
+          <div className="bg-white p-5 rounded-xl shadow-md border-t-4 border-stone-300 hover:border-stone-400 transition-colors">
+            <div className="flex items-center gap-2 mb-3 text-stone-800 font-bold text-lg border-b pb-2">
+              {icon}
+              {title}
+            </div>
+            {children}
+          </div>
+        );
+
+        const MeasureItem = ({ category, desc, examples }) => (
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-stone-100">
+            <h4 className="font-bold text-red-900 mb-1">{category}</h4>
+            <p className="text-xs text-stone-500 mb-3">{desc}</p>
+            <div className="space-y-1">
+              {examples.map((ex, i) => (
+                <div key={i} className="text-xs bg-stone-100 px-2 py-1 rounded text-stone-700 truncate">
+                  • {ex}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+        const ResultCard = ({ type, title, children }) => {
+          const isSuccess = type === 'success';
+          const colorClass = isSuccess ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+          const textClass = isSuccess ? 'text-green-900' : 'text-red-900';
+          const icon = isSuccess ? <CheckCircle className="text-green-700" /> : <AlertTriangle className="text-red-700" />;
+
+          return (
+            <div className={`p-6 rounded-xl border ${colorClass}`}>
+              <h3 className={`text-lg font-bold ${textClass} mb-3 flex items-center gap-2`}>
+                {icon} {title}
+              </h3>
+              <div className="text-stone-700">
+                {children}
+              </div>
+            </div>
+          );
+        };
+
+        const CompareRow = ({ label, left, right, highlight = false }) => (
+          <div className={`grid grid-cols-3 p-4 border-b border-stone-100 text-sm hover:bg-stone-50 transition-colors ${highlight ? 'bg-yellow-50' : ''}`}>
+            <div className="col-span-1 font-bold text-stone-700 flex items-center">{label}</div>
+            <div className="col-span-1 text-stone-600 pr-2">{left}</div>
+            <div className="col-span-1 text-stone-600 font-medium">{right}</div>
+          </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<QingReformLesson />);
+    </script>
+</body>
+</html>
