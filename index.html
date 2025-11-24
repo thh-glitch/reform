@@ -49,6 +49,10 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #a8a29e; 
         }
+        
+        .stat-bar-transition {
+            transition: width 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-stone-100">
@@ -57,8 +61,7 @@
     <script type="text/babel">
         const { useState, useRef, useEffect } = React;
         
-        // --- Internal Icon Components (Replaces Lucide dependency) ---
-        // This ensures the app works without external script errors
+        // --- Internal Icon Components ---
         
         const IconBase = ({ children, size = 24, className = "" }) => (
             <svg 
@@ -97,13 +100,20 @@
             X: (props) => <IconBase {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></IconBase>,
             Lightbulb: (props) => <IconBase {...props}><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 9.5 6 4.65 4.65 0 0 0 8 10.5c0 1.99.78 2.87 2.5 4.41"/><path d="M12 18h.01"/></IconBase>,
             Factory: (props) => <IconBase {...props}><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></IconBase>,
-            Ship: (props) => <IconBase {...props}><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.9 5.8 1.62 6"/><path d="M12 10V4"/><path d="M8 8v1"/><path d="M16 8v1"/><path d="M12 2v6"/><path d="M12 8a2 2 0 0 0-2-2"/><path d="M12 8a2 2 0 0 1 2-2"/></IconBase>
+            Ship: (props) => <IconBase {...props}><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.9 5.8 1.62 6"/><path d="M12 10V4"/><path d="M8 8v1"/><path d="M16 8v1"/><path d="M12 2v6"/><path d="M12 8a2 2 0 0 0-2-2"/><path d="M12 8a2 2 0 0 1 2-2"/></IconBase>,
+            Gamepad2: (props) => <IconBase {...props}><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></IconBase>,
+            Skull: (props) => <IconBase {...props}><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 17l-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></IconBase>,
+            Trophy: (props) => <IconBase {...props}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></IconBase>,
+            TrendingDown: (props) => <IconBase {...props}><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></IconBase>,
+            TrendingUp: (props) => <IconBase {...props}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></IconBase>,
+            Coins: (props) => <IconBase {...props}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></IconBase>
         };
 
         const { 
             BookOpen, Users, Sword, Scroll, AlertTriangle, CheckCircle, 
             ArrowRight, History, Scale, Anchor, Landmark, Sparkles, 
-            MessageCircle, Send, Bot, User, X, Lightbulb, Factory, Ship 
+            MessageCircle, Send, Bot, User, X, Lightbulb, Factory, Ship,
+            Gamepad2, Skull, Trophy, TrendingDown, TrendingUp, Coins
         } = Icons;
 
         const QingReformLesson = () => {
@@ -115,6 +125,7 @@
             { id: 'wuxu', label: '戊戌維新', icon: <Scroll size={20} /> },
             { id: 'compare', label: '比較與總結', icon: <Scale size={20} /> },
             { id: 'ai-lab', label: 'AI 歷史實驗室', icon: <Sparkles size={20} /> },
+            { id: 'game', label: '生存挑戰', icon: <Gamepad2 size={20} /> },
           ];
 
           const renderContent = () => {
@@ -129,6 +140,8 @@
                 return <CompareSection />;
               case 'ai-lab':
                 return <AiLabSection />;
+              case 'game':
+                return <GameSection />;
               default:
                 return <IntroSection setActiveTab={setActiveTab} />;
             }
@@ -163,7 +176,7 @@
                       className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-medium flex-1 justify-center whitespace-nowrap
                         ${activeTab === tab.id 
                           ? 'bg-red-800 text-white shadow-md' 
-                          : tab.id === 'ai-lab' 
+                          : (tab.id === 'ai-lab' || tab.id === 'game')
                             ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
                             : 'bg-stone-50 text-stone-600 hover:bg-stone-200'}`}
                     >
@@ -186,7 +199,564 @@
           );
         };
 
-        // --- Sections ---
+        // --- Game Section Component ---
+
+        const ProgressBar = ({ value, max, label, icon, colorClass }) => {
+            const percentage = Math.max(0, Math.min(100, (value / max) * 100));
+            return (
+                <div className="flex flex-col w-full">
+                    <div className="flex justify-between text-xs font-bold mb-1 text-stone-200">
+                        <span className="flex items-center gap-1">{icon} {label}</span>
+                        <span>{value}/{max}</span>
+                    </div>
+                    <div className="h-3 w-full bg-stone-700 rounded-full overflow-hidden border border-stone-600">
+                        <div 
+                            className={`h-full ${colorClass} stat-bar-transition relative`}
+                            style={{ width: `${percentage}%` }}
+                        >
+                            {/* Shine effect */}
+                            <div className="absolute top-0 left-0 bottom-0 right-0 bg-white opacity-20"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const GameSection = () => {
+          const [gameState, setGameState] = useState('menu'); // menu, playing, feedback, result
+          const [track, setTrack] = useState(null); // 'yangwu' or 'wuxu'
+          const [currentLevel, setCurrentLevel] = useState(0);
+          const [stats, setStats] = useState({ power: 60, money: 60 }); 
+          const [log, setLog] = useState([]);
+          const [feedback, setFeedback] = useState(null); // Store data for feedback screen
+
+          const scenarios = {
+            yangwu: {
+              title: "洋務大臣的艱難抉擇",
+              role: "李鴻章",
+              desc: "你是直隸總督李鴻章。你的目標是建立強大的海軍和工業，但你必須面對缺錢、保守派反對以及太后挪用軍費的現實。",
+              levels: [
+                {
+                  question: "【太平天國殘部】戰亂剛平，是否裁撤曾國藩的湘軍以節省開支？",
+                  choices: [
+                    { 
+                      text: "裁撤湘軍，改用綠營", 
+                      effect: { power: -10, money: +20 }, 
+                      result: "節省了大量軍餉，但綠營戰鬥力低下，地方治安惡化，你的軍事影響力也減弱了。" 
+                    },
+                    { 
+                      text: "保留精銳，編練防軍", 
+                      effect: { power: +10, money: -15 }, 
+                      result: "雖然開支巨大，但你保留了一支可靠的軍事力量，為日後的淮軍崛起奠定基礎。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【留美幼童】容閎建議選派幼童赴美留學，學習西方科技。",
+                  choices: [
+                    { 
+                      text: "支持並資助，派遣幼童", 
+                      effect: { power: -5, money: -10 }, 
+                      result: "這是一項長遠投資。雖然保守派批評幼童「西化」，但未來他們將成為鐵路、礦冶的棟樑（如詹天佑）。" 
+                    },
+                    { 
+                      text: "擔心西化，拒絕派遣", 
+                      effect: { power: +5, money: +0 }, 
+                      result: "保守派稱讚你「識大體」，但中國錯失了培養第一批現代工程師的機會。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【籌辦軍務】朝廷撥款不足，建立北洋水師需要大量銀兩，你該如何籌錢？",
+                  choices: [
+                    { 
+                      text: "向外國銀行高息借款", 
+                      effect: { power: -10, money: +30 }, 
+                      result: "你籌到了錢，買了新船，但背負了沈重的外債，朝中清流派彈劾你「賣國」。" 
+                    },
+                    { 
+                      text: "請求各地督撫協餉", 
+                      effect: { power: -5, money: +10 }, 
+                      result: "各地督撫推三阻四，只籌到少量款項，艦隊發展緩慢。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【天津教案】天津發生民眾打死外國領事與教士事件，列強軍艦集結，形勢危急。",
+                  choices: [
+                    { 
+                      text: "嚴懲肇事民眾，賠款道歉", 
+                      effect: { power: -25, money: -15 }, 
+                      result: "列強退兵了，但你被百姓罵為「漢奸」，在士大夫中聲望大跌。" 
+                    },
+                    { 
+                      text: "拒絕賠款，準備開戰", 
+                      effect: { power: +10, money: -40 }, 
+                      result: "雖然贏得了民心，但軍備尚未完成，為了備戰耗盡了剛籌到的資金，發展停滯。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【中法戰爭】法國侵略越南與台灣，主戰派群情激憤。",
+                  choices: [
+                    { 
+                      text: "趁勝求和，簽訂條約", 
+                      effect: { power: -15, money: -10 }, 
+                      result: "「不敗而敗」，你保住了南洋水師的實力，但被國人痛罵懦弱。" 
+                    },
+                    { 
+                      text: "血戰到底，拒絕談判", 
+                      effect: { power: +5, money: -30 }, 
+                      result: "雖然取得鎮南關大捷，但國庫再次見底，且福建水師全軍覆沒，損失慘重。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【修築鐵路】你提議修築鐵路運煤，但言官反對，說鐵路會「驚動龍脈，破壞風水」。",
+                  choices: [
+                    { 
+                      text: "堅持修築，強行徵地", 
+                      effect: { power: -20, money: +20 }, 
+                      result: "鐵路修成了，煤礦運輸成本大降。但你得罪了大量保守派官員，他們正伺機報復。" 
+                    },
+                    { 
+                      text: "妥協，改用騾馬拉火車", 
+                      effect: { power: -5, money: -10 }, 
+                      result: "鬧出了「馬拉火車」的國際笑話，雖然平息了風水之爭，但運輸效率極低。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【太后修園】慈禧太后想修頤和園慶祝壽辰，暗示要挪用海軍軍費。",
+                  choices: [
+                    { 
+                      text: "堅決反對，上書直諫", 
+                      effect: { power: -40, money: +0 }, 
+                      result: "太后大怒，雖未當場罷免你，但你失去了政治靠山，寸步難行。海軍軍費依然被其他途徑挪走。" 
+                    },
+                    { 
+                      text: "默許挪用，以此討好太后", 
+                      effect: { power: +20, money: -30 }, 
+                      result: "太后很高興，你的官位更穩了。但北洋水師多年未添新艦，火炮也沒錢更換彈藥。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【甲午風雲】日本艦隊來襲，北洋水師面臨決戰。",
+                  choices: [
+                    { 
+                      text: "主動出擊，決一死戰", 
+                      effect: { power: -20, money: -20 }, 
+                      result: "雖然將士用命，但因裝備落後且彈藥不足，艦隊損失慘重。" 
+                    },
+                    { 
+                      text: "避戰保船，躲入港口", 
+                      effect: { power: -50, money: 0 }, 
+                      result: "艦隊被困在港口，最終被日軍陸路包抄全殲。你簽署了屈辱的馬關條約，這就是洋務運動的結局。" 
+                    }
+                  ]
+                }
+              ]
+            },
+            wuxu: {
+              title: "光緒帝的百日突圍",
+              role: "光緒皇帝",
+              desc: "你是年輕的光緒帝。你不甘心做亡國之君，決心變法。但你手中無兵權，上面還有慈禧太后。",
+              levels: [
+                {
+                  question: "【公車上書】甲午戰敗，康有為等舉人聯名上書，要求變法。",
+                  choices: [
+                    { 
+                      text: "破格召見，支持變法", 
+                      effect: { power: +5, money: 0 }, 
+                      result: "你展現了改革的決心，獲得了維新派的支持，但也引起了太后的警覺。" 
+                    },
+                    { 
+                      text: "置之不理，按部就班", 
+                      effect: { power: -5, money: 0 }, 
+                      result: "你錯失了凝聚改革力量的最佳時機，國家危機進一步加深。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【帝后黨爭】你的老師翁同龢被太后逼迫罷官，這是在削弱你的羽翼。",
+                  choices: [
+                    { 
+                      text: "據理力爭，拒絕罷免", 
+                      effect: { power: -20, money: 0 }, 
+                      result: "你與太后的關係提前破裂，太后開始加強對你的監視，變法難度大增。" 
+                    },
+                    { 
+                      text: "忍痛批准，暫時隱忍", 
+                      effect: { power: -10, money: 0 }, 
+                      result: "你保住了表面和氣，但失去了朝中最重要的親信，變法只能依靠激進的新黨。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【變法起步】康有為建議「全變」，要短時間內頒布大量新政。",
+                  choices: [
+                    { 
+                      text: "大刀闊斧，百日下詔數十道", 
+                      effect: { power: -15, money: 0 }, 
+                      result: "詔書如雪片般飛下，地方官員看都看不過來，根本無法執行，反而引發官僚集團恐慌。" 
+                    },
+                    { 
+                      text: "循序漸進，先抓重點", 
+                      effect: { power: +5, money: 0 }, 
+                      result: "維新派嫌你太慢，且太后依然警惕。在歷史的洪流中，你似乎沒有時間慢慢來。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【裁撤冗官】為了提高效率和節省開支，需要裁減大量閒散衙門。",
+                  choices: [
+                    { 
+                      text: "立即裁撤，不留情面", 
+                      effect: { power: -30, money: +20 }, 
+                      result: "數萬名守舊官員丟了飯碗，他們聚集起來哭訴，成為了反對變法的最強大力量。" 
+                    },
+                    { 
+                      text: "給予補貼，分批裁減", 
+                      effect: { power: -10, money: -15 }, 
+                      result: "阻力稍小，但國庫無力支付龐大的遣散費，改革陷入僵局。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【廢除八股】廢除八股文是教育改革核心，但會斷絕讀書人出路。",
+                  choices: [
+                    { 
+                      text: "立即廢除，改試策論", 
+                      effect: { power: -30, money: 0 }, 
+                      result: "全國讀書人（未來的官員）群情激憤，視你為仇敵。保守勢力迅速集結反對你。" 
+                    },
+                    { 
+                      text: "設立新學堂，暫留八股", 
+                      effect: { power: -5, money: -20 }, 
+                      result: "改革阻力稍減，但新學堂耗資巨大，國庫空虛，難以為繼。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【廣開言路】是否允許平民百姓直接上書言事？",
+                  choices: [
+                    { 
+                      text: "允許上書，嚴懲阻攔者", 
+                      effect: { power: +10, money: 0 }, 
+                      result: "你收到了大量建議，但也得罪了高級官僚，他們認為這破壞了等級制度。" 
+                    },
+                    { 
+                      text: "僅限有功名者上書", 
+                      effect: { power: -5, money: 0 }, 
+                      result: "改革顯得不夠徹底，許多底層聲音無法傳達，維新派感到失望。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【伊藤訪華】日本前首相伊藤博文訪華，維新派建議聘請他為顧問。",
+                  choices: [
+                    { 
+                      text: "接見伊藤，尋求支持", 
+                      effect: { power: -25, money: 0 }, 
+                      result: "此舉觸動了太后敏感的神經，守舊派造謠說你要藉外國兵力圍攻園林。政變一觸即發。" 
+                    },
+                    { 
+                      text: "婉言謝絕，避免猜忌", 
+                      effect: { power: -5, money: 0 }, 
+                      result: "你錯失了可能的國際支持，而在國內你依然孤立無援。" 
+                    }
+                  ]
+                },
+                {
+                  question: "【生死存亡】保守派即將發動政變，維新派建議拉攏手握新軍的袁世凱。",
+                  choices: [
+                    { 
+                      text: "信任袁世凱，令其殺榮祿", 
+                      effect: { power: -100, money: 0 }, 
+                      result: "袁世凱表面答應，轉頭就向榮祿和慈禧告密。慈禧發動政變，你被囚禁瀛台，六君子被殺。變法失敗。" 
+                    },
+                    { 
+                      text: "不信袁世凱，試圖出逃", 
+                      effect: { power: -50, money: 0 }, 
+                      result: "京城已被封鎖，你無處可逃。結局依然是被囚禁，變法失敗。" 
+                    }
+                  ]
+                }
+              ]
+            }
+          };
+
+          const startGame = (selectedTrack) => {
+            setTrack(selectedTrack);
+            setGameState('playing');
+            setCurrentLevel(0);
+            setStats({ power: 60, money: 60 });
+            setLog([]);
+            setFeedback(null);
+          };
+
+          const handleChoice = (choice) => {
+            const newStats = {
+              power: Math.max(0, Math.min(100, stats.power + choice.effect.power)),
+              money: Math.max(0, Math.min(100, stats.money + choice.effect.money))
+            };
+            
+            // Prepare feedback data
+            setFeedback({
+                choiceText: choice.text,
+                resultText: choice.result,
+                effect: choice.effect,
+                oldStats: stats,
+                newStats: newStats
+            });
+
+            // Update stats immediately in background (or wait till next step, but here we update for consistency)
+            setStats(newStats);
+            
+            setLog([...log, { 
+              level: currentLevel + 1, 
+              question: scenarios[track].levels[currentLevel].question,
+              choice: choice.text,
+              result: choice.result 
+            }]);
+
+            setGameState('feedback');
+          };
+
+          const handleNextLevel = () => {
+            if (currentLevel < scenarios[track].levels.length - 1) {
+              setCurrentLevel(currentLevel + 1);
+              setGameState('playing');
+            } else {
+              setGameState('result');
+            }
+          };
+
+          if (gameState === 'menu') {
+            return (
+              <div className="space-y-6 animate-fadeIn">
+                <SectionHeader title="🎮 歷史生存挑戰" subtitle="穿越時空，看看你能否改變命運" color="indigo" />
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-red-50 p-6 rounded-xl border-2 border-red-200 hover:border-red-400 cursor-pointer transition-all hover:shadow-lg group" onClick={() => startGame('yangwu')}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-red-200 rounded-full group-hover:bg-red-300 transition-colors"><Anchor className="text-red-800" /></div>
+                      <div>
+                        <h3 className="text-xl font-bold text-red-900">洋務線：李鴻章</h3>
+                        <span className="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded-full font-bold">難度：⭐⭐⭐⭐</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-stone-600 mb-4 leading-relaxed">
+                      你需要在腐敗的官場中周旋。既要辦洋務建海軍，又要應付太后的修園挪款。外交、民生、軍備，每一個決定都關乎大清國運。
+                    </p>
+                    <button className="mt-2 w-full py-2 bg-red-800 text-white rounded-lg font-bold group-hover:bg-red-900 transition-colors">開始挑戰</button>
+                  </div>
+
+                  <div className="bg-blue-50 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 cursor-pointer transition-all hover:shadow-lg group" onClick={() => startGame('wuxu')}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-blue-200 rounded-full group-hover:bg-blue-300 transition-colors"><Scroll className="text-blue-800" /></div>
+                      <div>
+                        <h3 className="text-xl font-bold text-blue-900">維新線：光緒帝</h3>
+                        <span className="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-bold">難度：⭐⭐⭐⭐⭐</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-stone-600 mb-4 leading-relaxed">
+                      你是無權的皇帝，面對強大的守舊勢力。從帝后黨爭到爭取袁世凱，你有103天的時間來拯救危局。結局早已註定，還是你能逆天改命？
+                    </p>
+                    <button className="mt-2 w-full py-2 bg-blue-800 text-white rounded-lg font-bold group-hover:bg-blue-900 transition-colors">開始挑戰</button>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          if (gameState === 'playing') {
+            const currentScenario = scenarios[track].levels[currentLevel];
+            
+            // Calculate status colors
+            const getPowerColor = (val) => val > 60 ? 'bg-green-500' : val > 30 ? 'bg-yellow-500' : 'bg-red-600';
+            const getMoneyColor = (val) => val > 60 ? 'bg-yellow-400' : val > 30 ? 'bg-yellow-600' : 'bg-red-600';
+
+            return (
+              <div className="space-y-6 animate-fadeIn max-w-3xl mx-auto">
+                {/* HUD - Heads Up Display */}
+                <div className="bg-stone-800 text-white p-4 rounded-xl shadow-lg sticky top-2 z-10 border border-stone-600">
+                  <div className="flex justify-between items-center mb-3 border-b border-stone-600 pb-2">
+                    <div className="font-bold flex items-center gap-2">
+                        {track === 'yangwu' ? <Anchor size={18} className="text-red-400"/> : <Scroll size={18} className="text-blue-400"/>}
+                        角色：{scenarios[track].role}
+                    </div>
+                    <div className="text-xs text-stone-200">
+                        第 {currentLevel + 1} / {scenarios[track].levels.length} 關
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-6">
+                    <ProgressBar 
+                        value={stats.power} 
+                        max={100} 
+                        label="政治資本 (權力/信任)" 
+                        icon={<Users size={14} />} 
+                        colorClass={getPowerColor(stats.power)}
+                    />
+                    <ProgressBar 
+                        value={stats.money} 
+                        max={100} 
+                        label="國庫資金 (軍費/預算)" 
+                        icon={<Coins size={14} />} 
+                        colorClass={getMoneyColor(stats.money)}
+                    />
+                  </div>
+                </div>
+
+                {/* Scenario Card */}
+                <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-indigo-500 min-h-[300px] flex flex-col justify-between">
+                  <div>
+                      <h3 className="text-xl font-bold text-stone-800 mb-6 leading-relaxed flex items-start gap-2">
+                        <span className="bg-indigo-100 text-indigo-800 text-sm px-2 py-1 rounded mt-1 shrink-0">事件</span>
+                        {currentScenario.question}
+                      </h3>
+                      
+                      <div className="space-y-4">
+                        {currentScenario.choices.map((choice, idx) => (
+                          <button 
+                            key={idx}
+                            onClick={() => handleChoice(choice)}
+                            className="w-full text-left p-4 rounded-lg border-2 border-stone-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all group relative overflow-hidden"
+                          >
+                            <div className="relative z-10">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-bold text-stone-800 group-hover:text-indigo-900 text-lg">{choice.text}</span>
+                                </div>
+                                <div className="text-xs text-stone-400 group-hover:text-indigo-500 flex items-center gap-1">
+                                    點擊做出決策 <ArrowRight size={12}/>
+                                </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          if (gameState === 'feedback') {
+             const { choiceText, resultText, effect } = feedback;
+             return (
+                <div className="space-y-6 animate-fadeIn max-w-3xl mx-auto">
+                    <div className="bg-white p-8 rounded-xl shadow-xl border-2 border-indigo-100">
+                        <div className="flex items-center gap-3 mb-6 border-b border-stone-100 pb-4">
+                            <div className="p-3 bg-indigo-100 rounded-full text-indigo-600">
+                                <Lightbulb size={24} />
+                            </div>
+                            <h3 className="text-2xl font-bold text-stone-800">決策結果</h3>
+                        </div>
+
+                        <div className="mb-6">
+                            <p className="text-sm text-stone-500 uppercase font-bold mb-1">你的選擇</p>
+                            <p className="text-lg font-bold text-indigo-900 mb-4">{choiceText}</p>
+                            
+                            <p className="text-sm text-stone-500 uppercase font-bold mb-1">歷史後果</p>
+                            <p className="text-md text-stone-700 leading-relaxed bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                {resultText}
+                            </p>
+                        </div>
+
+                        <div className="flex gap-4 mb-8 justify-center">
+                             <div className={`px-4 py-2 rounded-lg font-bold border ${effect.power >= 0 ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                                {effect.power >= 0 ? <TrendingUp size={16} className="inline mr-1"/> : <TrendingDown size={16} className="inline mr-1"/>}
+                                權力 {effect.power > 0 ? '+' : ''}{effect.power}
+                             </div>
+                             <div className={`px-4 py-2 rounded-lg font-bold border ${effect.money >= 0 ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                                {effect.money >= 0 ? <TrendingUp size={16} className="inline mr-1"/> : <TrendingDown size={16} className="inline mr-1"/>}
+                                資金 {effect.money > 0 ? '+' : ''}{effect.money}
+                             </div>
+                        </div>
+
+                        <button 
+                            onClick={handleNextLevel}
+                            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                        >
+                            下一關 <ArrowRight size={18} />
+                        </button>
+                    </div>
+                </div>
+             );
+          }
+
+          if (gameState === 'result') {
+            const isFailure = stats.power <= 0 || track === 'wuxu'; // Wuxu historically fails anyway
+            
+            return (
+              <div className="space-y-6 animate-fadeIn">
+                 <div className={`p-8 rounded-xl text-center border-4 ${isFailure ? 'bg-stone-100 border-stone-300' : 'bg-yellow-50 border-yellow-300'}`}>
+                    {isFailure ? <Skull size={64} className="mx-auto text-stone-400 mb-4" /> : <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />}
+                    <h2 className="text-3xl font-bold text-stone-800 mb-2">{isFailure ? '結局：歷史的遺憾' : '結局：你創造了奇蹟？'}</h2>
+                    
+                    <div className="max-w-lg mx-auto text-stone-600 mb-6 leading-relaxed">
+                      {track === 'yangwu' && (
+                          <p>
+                              洋務運動最終破產。儘管你苦心經營，但<strong className="text-red-700">「只改器物，不改制度」</strong>的局限性，加上官場腐敗與太后掣肘，讓北洋水師在甲午海戰中灰飛煙滅。你的努力延緩了大清的衰落，卻無法阻止它的沈沒。
+                          </p>
+                      )}
+                      {track === 'wuxu' && (
+                          <p>
+                              戊戌維新僅歷時103天便告失敗。在強大的守舊勢力和慈禧太后面前，缺乏實權和軍隊的變法者就像以卵擊石。<strong className="text-blue-700">思想的啟蒙</strong>已經開始，但流血犧牲已不可避免。
+                          </p>
+                      )}
+                    </div>
+
+                    <div className="flex justify-center gap-4">
+                        <div className="text-center">
+                            <div className="text-xs uppercase tracking-wide text-stone-500 font-bold">最終政治資本</div>
+                            <div className={`text-2xl font-bold ${stats.power > 30 ? 'text-stone-800' : 'text-red-600'}`}>{stats.power}</div>
+                        </div>
+                        <div className="w-px bg-stone-300"></div>
+                        <div className="text-center">
+                            <div className="text-xs uppercase tracking-wide text-stone-500 font-bold">最終國庫資金</div>
+                            <div className={`text-2xl font-bold ${stats.money > 30 ? 'text-stone-800' : 'text-red-600'}`}>{stats.money}</div>
+                        </div>
+                    </div>
+
+                    <button onClick={() => setGameState('menu')} className="mt-8 px-8 py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                        重新挑戰
+                    </button>
+                 </div>
+
+                 <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-stone-200">
+                    <div className="bg-stone-50 p-4 border-b border-stone-200 font-bold text-stone-700 flex items-center gap-2">
+                        <History size={18} /> 你的執政紀錄
+                    </div>
+                    <div className="divide-y divide-stone-100">
+                      {log.map((item, idx) => (
+                        <div key={idx} className="p-4 hover:bg-stone-50 transition-colors">
+                           <div className="flex gap-3">
+                               <div className="font-mono text-indigo-200 text-xl font-bold select-none">{idx + 1}</div>
+                               <div>
+                                   <div className="font-bold text-stone-800 mb-1">{item.question}</div>
+                                   <div className="text-sm text-stone-600 grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                                      <div className="bg-stone-100 p-2 rounded border border-stone-200">
+                                        <span className="text-xs text-stone-500 block uppercase">選擇</span>
+                                        <span className="font-bold text-indigo-900">{item.choice}</span>
+                                      </div>
+                                      <div className="bg-stone-100 p-2 rounded border border-stone-200">
+                                        <span className="text-xs text-stone-500 block uppercase">歷史後果</span>
+                                        <span className="text-stone-700">{item.result}</span>
+                                      </div>
+                                   </div>
+                               </div>
+                           </div>
+                        </div>
+                      ))}
+                    </div>
+                 </div>
+              </div>
+            );
+          }
+        };
+
+        // --- Sections (Original) ---
 
         const IntroSection = ({ setActiveTab }) => (
           <div className="space-y-6 animate-fadeIn">
